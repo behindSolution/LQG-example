@@ -1,0 +1,1594 @@
+{
+	"info": {
+		"_postman_id": "query-gate-blog-api",
+		"name": "Query Gate - Blog API",
+		"description": "Complete blog API with posts, comments, categories, and tags management using Laravel Query Gate.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "api_version",
+			"value": "2025-01-01",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('auth_token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": ["{{base_url}}"],
+							"path": ["api", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.token) {",
+									"    pm.collectionVariables.set('auth_token', jsonData.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": ["{{base_url}}"],
+							"path": ["api", "login"]
+						}
+					}
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/me",
+							"host": ["{{base_url}}"],
+							"path": ["api", "me"]
+						}
+					}
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('auth_token', '');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/logout",
+							"host": ["{{base_url}}"],
+							"path": ["api", "logout"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Posts",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{auth_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"item": [
+				{
+					"name": "List Posts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}",
+								"description": "API Version (2024-01-01, 2024-06-01, 2025-01-01)"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"]
+						}
+					}
+				},
+				{
+					"name": "List Published Posts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[status][eq]=published",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[status][eq]",
+									"value": "published"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Featured Posts",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[status][eq]=published&filter[is_featured][eq]=1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[status][eq]",
+									"value": "published"
+								},
+								{
+									"key": "filter[is_featured][eq]",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Posts by Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[category_id][eq]=1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[category_id][eq]",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Posts by Author Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[author.name][like]=Admin",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[author.name][like]",
+									"value": "Admin"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Posts by Tags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[tag_slugs][in]=laravel,php",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[tag_slugs][in]",
+									"value": "laravel,php"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Popular Posts (views > 1000)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[views_count][gte]=1000&sort=views_count:desc",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[views_count][gte]",
+									"value": "1000"
+								},
+								{
+									"key": "sort",
+									"value": "views_count:desc"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Posts by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[published_at][between]=2024-01-01,2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[published_at][between]",
+									"value": "2024-01-01,2024-12-31"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Posts with Multiple Filters",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[status][eq]=published&filter[category.is_active][eq]=1&filter[views_count][gte]=100&sort=published_at:desc,likes_count:desc",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[status][eq]",
+									"value": "published"
+								},
+								{
+									"key": "filter[category.is_active][eq]",
+									"value": "1"
+								},
+								{
+									"key": "filter[views_count][gte]",
+									"value": "100"
+								},
+								{
+									"key": "sort",
+									"value": "published_at:desc,likes_count:desc"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Posts Excluding Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "X-Query-Version",
+								"value": "{{api_version}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts?filter[status][not_in]=archived,draft",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"],
+							"query": [
+								{
+									"key": "filter[status][not_in]",
+									"value": "archived,draft"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Post Changelog (Versioning)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts/__changelog",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts", "__changelog"]
+						}
+					}
+				},
+				{
+					"name": "Create Post",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"My New Blog Post\",\n    \"slug\": \"my-new-blog-post\",\n    \"excerpt\": \"This is a short excerpt of my new post.\",\n    \"content\": \"This is the full content of my amazing new blog post. It contains a lot of interesting information.\",\n    \"category_id\": 1,\n    \"featured_image\": \"https://example.com/image.jpg\",\n    \"status\": \"draft\",\n    \"tags\": [1, 2, 3]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/posts",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts"]
+						}
+					}
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Blog Post Title\",\n    \"excerpt\": \"Updated excerpt for the post.\",\n    \"content\": \"Updated content with more details.\",\n    \"tags\": [2, 4, 5]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/posts/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Post",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts", "1"]
+						}
+					}
+				},
+				{
+					"name": "Custom Actions",
+					"item": [
+						{
+							"name": "Publish Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/posts/1/publish",
+									"host": ["{{base_url}}"],
+									"path": ["query", "posts", "1", "publish"]
+								}
+							}
+						},
+						{
+							"name": "Unpublish Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/posts/1/unpublish",
+									"host": ["{{base_url}}"],
+									"path": ["query", "posts", "1", "unpublish"]
+								}
+							}
+						},
+						{
+							"name": "Archive Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"reason\": \"Content outdated\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/posts/1/archive",
+									"host": ["{{base_url}}"],
+									"path": ["query", "posts", "1", "archive"]
+								}
+							}
+						},
+						{
+							"name": "Feature Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/posts/1/feature",
+									"host": ["{{base_url}}"],
+									"path": ["query", "posts", "1", "feature"]
+								}
+							}
+						},
+						{
+							"name": "Unfeature Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/posts/1/unfeature",
+									"host": ["{{base_url}}"],
+									"path": ["query", "posts", "1", "unfeature"]
+								}
+							}
+						},
+						{
+							"name": "Duplicate Post",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"new_title\": \"Copy of Original Post\",\n    \"assign_to_me\": true\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/posts/1/duplicate",
+									"host": ["{{base_url}}"],
+									"path": ["query", "posts", "1", "duplicate"]
+								}
+							}
+						},
+						{
+							"name": "Bulk Publish Posts",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"post_ids\": [1, 2, 3, 4, 5]\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/posts/bulk-publish",
+									"host": ["{{base_url}}"],
+									"path": ["query", "posts", "bulk-publish"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "List Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"]
+						}
+					}
+				},
+				{
+					"name": "List Comments by Post",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments?filter[post_id][eq]=1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"],
+							"query": [
+								{
+									"key": "filter[post_id][eq]",
+									"value": "1"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Pending Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments?filter[status][eq]=pending&sort=created_at:asc",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"],
+							"query": [
+								{
+									"key": "filter[status][eq]",
+									"value": "pending"
+								},
+								{
+									"key": "sort",
+									"value": "created_at:asc"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Approved Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments?filter[status][eq]=approved",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"],
+							"query": [
+								{
+									"key": "filter[status][eq]",
+									"value": "approved"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Spam Comments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments?filter[status][eq]=spam",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"],
+							"query": [
+								{
+									"key": "filter[status][eq]",
+									"value": "spam"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Comments by Author Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments?filter[author.name][like]=John",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"],
+							"query": [
+								{
+									"key": "filter[author.name][like]",
+									"value": "John"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Comments by Content",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments?filter[content][like]=great",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"],
+							"query": [
+								{
+									"key": "filter[content][like]",
+									"value": "great"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "List Comments by Post Title",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments?filter[post.title][like]=Laravel",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"],
+							"query": [
+								{
+									"key": "filter[post.title][like]",
+									"value": "Laravel"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Comment (Authenticated)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post_id\": 1,\n    \"content\": \"This is a great article! Thanks for sharing.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/comments",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"]
+						}
+					}
+				},
+				{
+					"name": "Create Comment (Anonymous)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post_id\": 1,\n    \"author_name\": \"John Doe\",\n    \"author_email\": \"john@example.com\",\n    \"content\": \"Nice post! Very informative.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/comments",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"]
+						}
+					}
+				},
+				{
+					"name": "Create Reply to Comment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post_id\": 1,\n    \"parent_id\": 1,\n    \"content\": \"I agree with your comment!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/comments",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments"]
+						}
+					}
+				},
+				{
+					"name": "Update Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"content\": \"Updated comment content.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/comments/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments", "1"]
+						}
+					}
+				},
+				{
+					"name": "Custom Actions",
+					"auth": {
+						"type": "bearer",
+						"bearer": [
+							{
+								"key": "token",
+								"value": "{{auth_token}}",
+								"type": "string"
+							}
+						]
+					},
+					"item": [
+						{
+							"name": "Approve Comment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/comments/1/approve",
+									"host": ["{{base_url}}"],
+									"path": ["query", "comments", "1", "approve"]
+								}
+							}
+						},
+						{
+							"name": "Reject Comment",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"reason\": \"Inappropriate content\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/comments/1/reject",
+									"host": ["{{base_url}}"],
+									"path": ["query", "comments", "1", "reject"]
+								}
+							}
+						},
+						{
+							"name": "Mark Comment as Spam",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{base_url}}/query/comments/1/mark-spam",
+									"host": ["{{base_url}}"],
+									"path": ["query", "comments", "1", "mark-spam"]
+								}
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "List Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/categories",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories"]
+						}
+					}
+				},
+				{
+					"name": "List Active Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/categories?filter[is_active][eq]=1&sort=name:asc",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories"],
+							"query": [
+								{
+									"key": "filter[is_active][eq]",
+									"value": "1"
+								},
+								{
+									"key": "sort",
+									"value": "name:asc"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Categories by Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/categories?filter[name][like]=Tech",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories"],
+							"query": [
+								{
+									"key": "filter[name][like]",
+									"value": "Tech"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Category by Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/categories?filter[slug][eq]=technology",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories"],
+							"query": [
+								{
+									"key": "filter[slug][eq]",
+									"value": "technology"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Category\",\n    \"slug\": \"new-category\",\n    \"description\": \"Description for the new category\",\n    \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/categories",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories"]
+						}
+					}
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Category Name\",\n    \"description\": \"Updated description\",\n    \"is_active\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/categories/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/categories/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Tags",
+			"item": [
+				{
+					"name": "List Tags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/tags",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags"]
+						}
+					}
+				},
+				{
+					"name": "List Tags Sorted by Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/tags?sort=name:asc",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags"],
+							"query": [
+								{
+									"key": "sort",
+									"value": "name:asc"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Search Tags by Name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/tags?filter[name][like]=Laravel",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags"],
+							"query": [
+								{
+									"key": "filter[name][like]",
+									"value": "Laravel"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Tag by Slug",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/tags?filter[slug][eq]=php",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags"],
+							"query": [
+								{
+									"key": "filter[slug][eq]",
+									"value": "php"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Tag",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Tag\",\n    \"slug\": \"new-tag\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/tags",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags"]
+						}
+					}
+				},
+				{
+					"name": "Update Tag",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Tag Name\",\n    \"slug\": \"updated-tag-name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/tags/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Tag",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/tags/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/users",
+							"host": ["{{base_url}}"],
+							"path": ["query", "users"]
+						}
+					}
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New User\",\n    \"email\": \"newuser@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/users",
+							"host": ["{{base_url}}"],
+							"path": ["query", "users"]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated User Name\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/query/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "users", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Documentation",
+			"item": [
+				{
+					"name": "OpenAPI JSON",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/docs.json",
+							"host": ["{{base_url}}"],
+							"path": ["query", "docs.json"]
+						}
+					}
+				},
+				{
+					"name": "OpenAPI UI (ReDoc)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/query/docs",
+							"host": ["{{base_url}}"],
+							"path": ["query", "docs"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
