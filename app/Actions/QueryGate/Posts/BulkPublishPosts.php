@@ -23,11 +23,6 @@ class BulkPublishPosts extends AbstractQueryGateAction
         return 200;
     }
 
-    public function requiresModel(): bool
-    {
-        return false;
-    }
-
     public function authorize($request, $model): ?bool
     {
         return $request->user()->can('create', Post::class);
