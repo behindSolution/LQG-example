@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "behindsolution/laravel-query-gate",
-            "version": "v1.3.7",
+            "version": "v1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/behindSolution/laravel-query-gate.git",
-                "reference": "0b8bcb464d2df3c2e8461d2d5773274442a531a0"
+                "reference": "8ea19c1584458da8e468c9466fd3b109e792e212"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/behindSolution/laravel-query-gate/zipball/0b8bcb464d2df3c2e8461d2d5773274442a531a0",
-                "reference": "0b8bcb464d2df3c2e8461d2d5773274442a531a0",
+                "url": "https://api.github.com/repos/behindSolution/laravel-query-gate/zipball/8ea19c1584458da8e468c9466fd3b109e792e212",
+                "reference": "8ea19c1584458da8e468c9466fd3b109e792e212",
                 "shasum": ""
             },
             "require": {
@@ -53,9 +53,9 @@
             "description": "Generic HTTP gateway for Laravel Eloquent queries.",
             "support": {
                 "issues": "https://github.com/behindSolution/laravel-query-gate/issues",
-                "source": "https://github.com/behindSolution/laravel-query-gate/tree/v1.3.7"
+                "source": "https://github.com/behindSolution/laravel-query-gate/tree/v1.4.0"
             },
-            "time": "2026-01-15T02:59:21+00:00"
+            "time": "2026-01-17T13:10:22+00:00"
         },
         {
             "name": "brick/math",

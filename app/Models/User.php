@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Resources\UserResource;
 use BehindSolution\LaravelQueryGate\Contracts\QueryGateAction;
 use BehindSolution\LaravelQueryGate\Support\ActionDefinition;
 use BehindSolution\LaravelQueryGate\Support\ActionsBuilder;
@@ -69,7 +70,7 @@ class User extends Authenticatable
     {
         return QueryGate::make()
             ->alias('users')
-            ->select(['id', 'name', 'email'])
+            ->select(UserResource::class)
             ->actions(fn ($actions) => $actions
                 ->create(fn (ActionDefinition $action) => $action
                     ->validations([
@@ -82,11 +83,7 @@ class User extends Authenticatable
                         $model->password = Hash::make($payload['password']);
                         $model->save();
 
-                        return [
-                            'id' => $model->id,
-                            'name' => $model->name,
-                            'email' => $model->email,
-                        ];
+                        return new UserResource($model);
                     })
                 )
                 ->update(fn ($action) => $action
