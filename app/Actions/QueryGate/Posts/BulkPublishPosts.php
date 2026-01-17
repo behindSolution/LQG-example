@@ -41,6 +41,13 @@ class BulkPublishPosts extends AbstractQueryGateAction
         ];
     }
 
+    public function openapiRequest(): array
+    {
+        return [
+            'post_ids' => [fake()->randomNumber(), fake()->randomNumber(), fake()->randomNumber()],
+        ];
+    }
+
     public function handle($request, $model, array $payload)
     {
         $results = app(PostService::class)->bulkPublish($payload['post_ids']);

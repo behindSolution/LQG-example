@@ -34,6 +34,13 @@ class ArchivePost extends AbstractQueryGateAction
         ];
     }
 
+    public function openapiRequest(): array
+    {
+        return [
+            'reason' => fake()->sentence(),
+        ];
+    }
+
     public function handle($request, $model, array $payload)
     {
         $post = app(PostService::class)->archive($model);

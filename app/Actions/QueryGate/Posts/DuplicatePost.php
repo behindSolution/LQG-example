@@ -35,6 +35,14 @@ class DuplicatePost extends AbstractQueryGateAction
         ];
     }
 
+    public function openapiRequest(): array
+    {
+        return [
+            'new_title' => fake()->sentence(),
+            'assign_to_me' => fake()->boolean(),
+        ];
+    }
+
     public function handle($request, $model, array $payload)
     {
         $assignToMe = $payload['assign_to_me'] ?? true;

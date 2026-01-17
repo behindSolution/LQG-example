@@ -32,6 +32,11 @@ class FeaturePost extends AbstractQueryGateAction
         return [];
     }
 
+    public function openapiRequest(): array
+    {
+        return [];
+    }
+
     public function handle($request, $model, array $payload)
     {
         $post = app(PostService::class)->feature($model);

@@ -32,6 +32,11 @@ class PublishPost extends AbstractQueryGateAction
         return [];
     }
 
+    public function openapiRequest(): array
+    {
+        return [];
+    }
+
     public function handle($request, $model, array $payload)
     {
         $post = app(PostService::class)->publish($model);

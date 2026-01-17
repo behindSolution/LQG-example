@@ -27,6 +27,12 @@ class Tag extends Model
         return QueryGate::make()
             ->alias('tags')
             ->cache(600, 'tags-list')
+            ->openapiResponse([
+                'id' => fake()->randomNumber(),
+                'name' => fake()->word(),
+                'slug' => fake()->slug(),
+                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+            ])
             ->filters([
                 'name' => ['string', 'max:50'],
                 'slug' => ['string', 'max:50'],
@@ -43,11 +49,19 @@ class Tag extends Model
                         'name' => ['required', 'string', 'max:50'],
                         'slug' => ['required', 'string', 'max:50', 'unique:tags,slug'],
                     ])
+                    ->openapiRequest([
+                        'name' => fake()->word(),
+                        'slug' => fake()->slug(),
+                    ])
                 )
                 ->update(fn ($action) => $action
                     ->validations([
                         'name' => ['sometimes', 'string', 'max:50'],
                         'slug' => ['sometimes', 'string', 'max:50', 'unique:tags,slug'],
+                    ])
+                    ->openapiRequest([
+                        'name' => fake()->word(),
+                        'slug' => fake()->slug(),
                     ])
                 )
                 ->delete()

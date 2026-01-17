@@ -93,6 +93,22 @@ class Comment extends Model
             ->alias('comments')
             ->cache(60, 'comments-list')
             ->paginationMode('classic')
+            ->openapiResponse([
+                'id' => fake()->randomNumber(),
+                'post_id' => fake()->randomNumber(),
+                'user_id' => fake()->randomNumber(),
+                'parent_id' => fake()->optional()->randomNumber(),
+                'author_name' => fake()->name(),
+                'author_email' => fake()->safeEmail(),
+                'content' => fake()->paragraph(),
+                'status' => fake()->randomElement(['pending', 'approved', 'spam', 'rejected']),
+                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+                'post.id' => fake()->randomNumber(),
+                'post.title' => fake()->sentence(),
+                'post.slug' => fake()->slug(),
+                'author.id' => fake()->randomNumber(),
+                'author.name' => fake()->name(),
+            ])
             ->query(fn ($query, $request) => $query->with([
                 'post:id,title,slug',
                 'author:id,name',
@@ -147,6 +163,13 @@ class Comment extends Model
                         'author_email' => ['required_without:user_id', 'nullable', 'email', 'max:255'],
                         'content' => ['required', 'string', 'max:2000'],
                     ])
+                    ->openapiRequest([
+                        'post_id' => fake()->randomNumber(),
+                        'parent_id' => fake()->optional()->randomNumber(),
+                        'author_name' => fake()->name(),
+                        'author_email' => fake()->safeEmail(),
+                        'content' => fake()->paragraph(),
+                    ])
                     ->handle(function ($request, $model, $payload) {
                         $model->fill($payload);
                         $model->user_id = $request->user()?->id;
@@ -160,6 +183,9 @@ class Comment extends Model
                 ->update(fn ($action) => $action
                     ->validations([
                         'content' => ['sometimes', 'string', 'max:2000'],
+                    ])
+                    ->openapiRequest([
+                        'content' => fake()->paragraph(),
                     ])
                     ->policy('update')
                 )

@@ -34,6 +34,13 @@ class RejectComment extends AbstractQueryGateAction
         ];
     }
 
+    public function openapiRequest(): array
+    {
+        return [
+            'reason' => fake()->sentence(),
+        ];
+    }
+
     public function handle($request, $model, array $payload)
     {
         $comment = app(CommentService::class)->reject($model);

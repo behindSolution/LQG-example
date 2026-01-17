@@ -70,6 +70,14 @@ class User extends Authenticatable
     {
         return QueryGate::make()
             ->alias('users')
+            ->openapiResponse([
+                'id' => fake()->randomNumber(),
+                'name' => fake()->name(),
+                'email' => fake()->safeEmail(),
+                'email_verified_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+                'updated_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+            ])
             ->select(UserResource::class)
             ->actions(fn ($actions) => $actions
                 ->create(fn (ActionDefinition $action) => $action
@@ -77,6 +85,11 @@ class User extends Authenticatable
                         'name' => ['required', 'string'],
                         'email' => ['required', 'email', 'unique:users,email'],
                         'password' => ['required', 'string'],
+                    ])
+                    ->openapiRequest([
+                        'name' => fake()->name(),
+                        'email' => fake()->safeEmail(),
+                        'password' => fake()->password(),
                     ])
                     ->handle(function ($request, $model, $payload) {
                         $model->fill($payload);
@@ -89,6 +102,9 @@ class User extends Authenticatable
                 ->update(fn ($action) => $action
                     ->validations([
                         'name' => ['required', 'string'],
+                    ])
+                    ->openapiRequest([
+                        'name' => fake()->name(),
                     ])
                 )
                 ->delete()

@@ -142,6 +142,30 @@ class Post extends Model
             ->alias('posts')
             ->cache(120, 'posts-list')
             ->paginationMode('cursor')
+            ->openapiResponse([
+                'id' => fake()->randomNumber(),
+                'title' => fake()->sentence(),
+                'slug' => fake()->slug(),
+                'excerpt' => fake()->paragraph(),
+                'content' => fake()->paragraphs(3, true),
+                'featured_image' => fake()->imageUrl(),
+                'status' => fake()->randomElement(['draft', 'pending', 'published', 'archived']),
+                'is_featured' => fake()->boolean(),
+                'views_count' => fake()->randomNumber(4),
+                'likes_count' => fake()->randomNumber(3),
+                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+                'updated_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+                'published_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+                'author.id' => fake()->randomNumber(),
+                'author.name' => fake()->name(),
+                'author.email' => fake()->safeEmail(),
+                'category.id' => fake()->randomNumber(),
+                'category.name' => fake()->word(),
+                'category.slug' => fake()->slug(),
+                'tags.id' => fake()->randomNumber(),
+                'tags.name' => fake()->word(),
+                'tags.slug' => fake()->slug(),
+            ])
             ->query(fn ($query, $request) => $query->with(['author:id,name', 'category:id,name,slug', 'tags:id,name,slug']))
 
             // Version 1: Basic API
@@ -283,6 +307,16 @@ class Post extends Model
                         'tags' => ['nullable', 'array'],
                         'tags.*' => ['exists:tags,id'],
                     ])
+                    ->openapiRequest([
+                        'title' => fake()->sentence(),
+                        'slug' => fake()->slug(),
+                        'excerpt' => fake()->paragraph(),
+                        'content' => fake()->paragraphs(3, true),
+                        'category_id' => fake()->randomNumber(),
+                        'featured_image' => fake()->imageUrl(),
+                        'status' => fake()->randomElement(['draft', 'pending']),
+                        'tags' => [fake()->randomNumber(), fake()->randomNumber()],
+                    ])
                     ->handle(function ($request, $model, $payload) {
                         return app(PostService::class)->create(
                             $request->user(),
@@ -300,6 +334,15 @@ class Post extends Model
                         'featured_image' => ['nullable', 'string', 'url', 'max:500'],
                         'tags' => ['nullable', 'array'],
                         'tags.*' => ['exists:tags,id'],
+                    ])
+                    ->openapiRequest([
+                        'title' => fake()->sentence(),
+                        'slug' => fake()->slug(),
+                        'excerpt' => fake()->paragraph(),
+                        'content' => fake()->paragraphs(3, true),
+                        'category_id' => fake()->randomNumber(),
+                        'featured_image' => fake()->imageUrl(),
+                        'tags' => [fake()->randomNumber(), fake()->randomNumber()],
                     ])
                     ->policy('update')
                     ->handle(function ($request, $model, $payload) {

@@ -36,6 +36,14 @@ class Category extends Model
         return QueryGate::make()
             ->alias('categories')
             ->cache(300, 'categories-list')
+            ->openapiResponse([
+                'id' => fake()->randomNumber(),
+                'name' => fake()->word(),
+                'slug' => fake()->slug(),
+                'description' => fake()->sentence(),
+                'is_active' => fake()->boolean(),
+                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
+            ])
             ->filters([
                 'name' => ['string', 'max:100'],
                 'slug' => ['string', 'max:100'],
@@ -58,6 +66,12 @@ class Category extends Model
                         'description' => ['nullable', 'string', 'max:500'],
                         'is_active' => ['boolean'],
                     ])
+                    ->openapiRequest([
+                        'name' => fake()->word(),
+                        'slug' => fake()->slug(),
+                        'description' => fake()->sentence(),
+                        'is_active' => fake()->boolean(),
+                    ])
                 )
                 ->update(fn ($action) => $action
                     ->validations([
@@ -65,6 +79,12 @@ class Category extends Model
                         'slug' => ['sometimes', 'string', 'max:100', 'unique:categories,slug'],
                         'description' => ['nullable', 'string', 'max:500'],
                         'is_active' => ['boolean'],
+                    ])
+                    ->openapiRequest([
+                        'name' => fake()->word(),
+                        'slug' => fake()->slug(),
+                        'description' => fake()->sentence(),
+                        'is_active' => fake()->boolean(),
                     ])
                 )
                 ->delete()

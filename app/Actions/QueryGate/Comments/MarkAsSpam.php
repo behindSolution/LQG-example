@@ -32,6 +32,11 @@ class MarkAsSpam extends AbstractQueryGateAction
         return [];
     }
 
+    public function openapiRequest(): array
+    {
+        return [];
+    }
+
     public function handle($request, $model, array $payload)
     {
         $comment = app(CommentService::class)->markAsSpam($model);
