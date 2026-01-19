@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\TagDetailResource;
 use BehindSolution\LaravelQueryGate\Support\QueryGate;
 use BehindSolution\LaravelQueryGate\Traits\HasQueryGate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,7 +32,6 @@ class Tag extends Model
                 'id' => fake()->randomNumber(),
                 'name' => fake()->word(),
                 'slug' => fake()->slug(),
-                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
             ])
             ->filters([
                 'name' => ['string', 'max:50'],
@@ -65,6 +65,10 @@ class Tag extends Model
                     ])
                 )
                 ->delete()
+                ->detail(fn ($action) => $action
+                    ->select(TagDetailResource::class)
+                    ->query(fn ($query) => $query->withCount('posts'))
+                )
             );
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Http\Resources\CommentDetailResource;
+use App\Http\Resources\CommentResource;
 use App\Actions\QueryGate\Comments\ApproveComment;
 use App\Actions\QueryGate\Comments\MarkAsSpam;
 use App\Actions\QueryGate\Comments\RejectComment;
@@ -95,25 +97,10 @@ class Comment extends Model
             ->paginationMode('classic')
             ->openapiResponse([
                 'id' => fake()->randomNumber(),
-                'post_id' => fake()->randomNumber(),
-                'user_id' => fake()->randomNumber(),
-                'parent_id' => fake()->optional()->randomNumber(),
                 'author_name' => fake()->name(),
-                'author_email' => fake()->safeEmail(),
-                'content' => fake()->paragraph(),
                 'status' => fake()->randomElement(['pending', 'approved', 'spam', 'rejected']),
                 'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
-                'post.id' => fake()->randomNumber(),
-                'post.title' => fake()->sentence(),
-                'post.slug' => fake()->slug(),
-                'author.id' => fake()->randomNumber(),
-                'author.name' => fake()->name(),
             ])
-            ->query(fn ($query, $request) => $query->with([
-                'post:id,title,slug',
-                'author:id,name',
-                'parent:id,content',
-            ]))
 
             ->filters([
                 'post_id' => 'integer',
@@ -145,13 +132,7 @@ class Comment extends Model
                 'content' => fn ($builder, $operator, $value, $column) =>
                     $builder->where($column, 'like', '%' . $value . '%'),
             ])
-            ->select([
-                'id', 'post_id', 'user_id', 'parent_id',
-                'author_name', 'author_email', 'content',
-                'status', 'created_at',
-                'post.id', 'post.title', 'post.slug',
-                'author.id', 'author.name',
-            ])
+            ->select(['id', 'author_name', 'status', 'created_at'])
             ->sorts(['created_at', 'status'])
 
             ->actions(fn ($actions) => $actions
@@ -191,6 +172,13 @@ class Comment extends Model
                 )
                 ->delete(fn ($action) => $action
                     ->policy('delete')
+                )
+                ->detail(fn ($action) => $action
+                    ->select(CommentDetailResource::class)
+                    ->query(fn ($query) => $query
+                        ->with(['post:id,title,slug,status', 'author:id,name,email', 'parent:id,author_name,content'])
+                        ->withCount('replies')
+                    )
                 )
 
                 // Custom Actions

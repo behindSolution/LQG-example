@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\PostDetailResource;
 use App\Actions\QueryGate\Posts\ArchivePost;
 use App\Actions\QueryGate\Posts\BulkPublishPosts;
 use App\Actions\QueryGate\Posts\DuplicatePost;
@@ -146,29 +147,11 @@ class Post extends Model
                 'id' => fake()->randomNumber(),
                 'title' => fake()->sentence(),
                 'slug' => fake()->slug(),
-                'excerpt' => fake()->paragraph(),
-                'content' => fake()->paragraphs(3, true),
-                'featured_image' => fake()->imageUrl(),
                 'status' => fake()->randomElement(['draft', 'pending', 'published', 'archived']),
-                'is_featured' => fake()->boolean(),
-                'views_count' => fake()->randomNumber(4),
-                'likes_count' => fake()->randomNumber(3),
-                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
-                'updated_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
                 'published_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
-                'author.id' => fake()->randomNumber(),
-                'author.name' => fake()->name(),
-                'author.email' => fake()->safeEmail(),
-                'category.id' => fake()->randomNumber(),
-                'category.name' => fake()->word(),
-                'category.slug' => fake()->slug(),
-                'tags.id' => fake()->randomNumber(),
-                'tags.name' => fake()->word(),
-                'tags.slug' => fake()->slug(),
             ])
-            ->query(fn ($query, $request) => $query->with(['author:id,name', 'category:id,name,slug', 'tags:id,name,slug']))
 
-            // Version 1: Basic API
+            // Version 1: Basic API - Minimal fields
             ->version('2024-01-01', function (QueryGate $gate) {
                 $gate->filters([
                     'title' => ['string', 'max:255'],
@@ -180,11 +163,11 @@ class Post extends Model
                     'status' => ['eq'],
                     'created_at' => ['gte', 'lte'],
                 ])
-                ->select(['id', 'title', 'slug', 'status', 'created_at'])
+                ->select(['id', 'title', 'slug', 'status'])
                 ->sorts(['created_at', 'title']);
             })
 
-            // Version 2: Extended filters and relations
+            // Version 2: Extended filters
             ->version('2024-06-01', function (QueryGate $gate) {
                 $gate->filters([
                     'title' => ['string', 'max:255'],
@@ -208,11 +191,7 @@ class Post extends Model
                     'author.name' => ['like'],
                     'category.slug' => ['eq'],
                 ])
-                ->select([
-                    'id', 'title', 'slug', 'excerpt', 'status',
-                    'is_featured', 'views_count', 'created_at', 'published_at',
-                    'author.name', 'category.name', 'category.slug',
-                ])
+                ->select(['id', 'title', 'slug', 'status', 'is_featured', 'published_at'])
                 ->sorts(['created_at', 'published_at', 'title', 'views_count']);
             })
 
@@ -280,14 +259,7 @@ class Post extends Model
                             }
                         }),
                 ])
-                ->select([
-                    'id', 'title', 'slug', 'excerpt', 'content', 'featured_image',
-                    'status', 'is_featured', 'views_count', 'likes_count',
-                    'created_at', 'updated_at', 'published_at',
-                    'author.id', 'author.name', 'author.email',
-                    'category.id', 'category.name', 'category.slug',
-                    'tags.id', 'tags.name', 'tags.slug',
-                ])
+                ->select(['id', 'title', 'slug', 'status', 'is_featured', 'published_at'])
                 ->sorts(['created_at', 'updated_at', 'published_at', 'title', 'views_count', 'likes_count']);
             })
 
@@ -351,6 +323,13 @@ class Post extends Model
                 )
                 ->delete(fn ($action) => $action
                     ->policy('delete')
+                )
+                ->detail(fn ($action) => $action
+                    ->select(PostDetailResource::class)
+                    ->query(fn ($query) => $query
+                        ->with(['author', 'category', 'tags'])
+                        ->withCount('comments')
+                    )
                 )
 
                 // Custom Actions

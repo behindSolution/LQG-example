@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a753fe21cf94dfa9aa409a12e2bce61",
+    "content-hash": "4bf5d129d8f11ff749b3497c2f132fd4",
     "packages": [
         {
             "name": "behindsolution/laravel-query-gate",
-            "version": "dev-feature/openapi",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/behindSolution/laravel-query-gate.git",
-                "reference": "7d05cdc3a0bbf861664e7a00aab22a2e0c72f497"
+                "reference": "c371766da9d7517937a42f77389307ef74cc6a2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/behindSolution/laravel-query-gate/zipball/7d05cdc3a0bbf861664e7a00aab22a2e0c72f497",
-                "reference": "7d05cdc3a0bbf861664e7a00aab22a2e0c72f497",
+                "url": "https://api.github.com/repos/behindSolution/laravel-query-gate/zipball/c371766da9d7517937a42f77389307ef74cc6a2a",
+                "reference": "c371766da9d7517937a42f77389307ef74cc6a2a",
                 "shasum": ""
             },
             "require": {
@@ -53,9 +53,9 @@
             "description": "Generic HTTP gateway for Laravel Eloquent queries.",
             "support": {
                 "issues": "https://github.com/behindSolution/laravel-query-gate/issues",
-                "source": "https://github.com/behindSolution/laravel-query-gate/tree/feature/openapi"
+                "source": "https://github.com/behindSolution/laravel-query-gate/tree/v1.6.0"
             },
-            "time": "2026-01-17T18:30:35+00:00"
+            "time": "2026-01-18T22:56:28+00:00"
         },
         {
             "name": "brick/math",
@@ -8476,9 +8476,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "behindsolution/laravel-query-gate": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

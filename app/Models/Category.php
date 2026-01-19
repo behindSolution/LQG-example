@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\CategoryDetailResource;
 use BehindSolution\LaravelQueryGate\Support\QueryGate;
 use BehindSolution\LaravelQueryGate\Traits\HasQueryGate;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,9 +41,7 @@ class Category extends Model
                 'id' => fake()->randomNumber(),
                 'name' => fake()->word(),
                 'slug' => fake()->slug(),
-                'description' => fake()->sentence(),
                 'is_active' => fake()->boolean(),
-                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
             ])
             ->filters([
                 'name' => ['string', 'max:100'],
@@ -56,7 +55,7 @@ class Category extends Model
                 'is_active' => ['eq'],
                 'created_at' => ['gte', 'lte', 'between'],
             ])
-            ->select(['id', 'name', 'slug', 'description', 'is_active', 'created_at'])
+            ->select(['id', 'name', 'slug', 'is_active'])
             ->sorts(['name', 'created_at'])
             ->actions(fn ($actions) => $actions
                 ->create(fn ($action) => $action
@@ -88,6 +87,10 @@ class Category extends Model
                     ])
                 )
                 ->delete()
+                ->detail(fn ($action) => $action
+                    ->select(CategoryDetailResource::class)
+                    ->query(fn ($query) => $query->withCount('posts'))
+                )
             );
     }
 }

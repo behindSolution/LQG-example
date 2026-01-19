@@ -191,7 +191,26 @@
 							"raw": "{{base_url}}/query/posts",
 							"host": ["{{base_url}}"],
 							"path": ["query", "posts"]
-						}
+						},
+						"description": "Returns minimal fields: id, title, slug, status, is_featured, published_at"
+					}
+				},
+				{
+					"name": "Get Post Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/posts/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "posts", "1"]
+						},
+						"description": "Returns full post details using PostDetailResource: id, title, slug, excerpt, content, featured_image, status, is_featured, views_count, likes_count, created_at, updated_at, published_at, author (full), category (full), tags, comments_count"
 					}
 				},
 				{
@@ -740,7 +759,26 @@
 							"raw": "{{base_url}}/query/comments",
 							"host": ["{{base_url}}"],
 							"path": ["query", "comments"]
-						}
+						},
+						"description": "Returns minimal fields: id, author_name, status, created_at"
+					}
+				},
+				{
+					"name": "Get Comment Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/comments/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "comments", "1"]
+						},
+						"description": "Returns full comment details using CommentDetailResource: id, post_id, user_id, parent_id, author_name, author_email, content, status, ip_address, created_at, updated_at, post (full), author (full), parent, replies_count"
 					}
 				},
 				{
@@ -1164,7 +1202,26 @@
 							"raw": "{{base_url}}/query/categories",
 							"host": ["{{base_url}}"],
 							"path": ["query", "categories"]
-						}
+						},
+						"description": "Returns minimal fields: id, name, slug, is_active"
+					}
+				},
+				{
+					"name": "Get Category Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/categories/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "categories", "1"]
+						},
+						"description": "Returns full category details using CategoryDetailResource: id, name, slug, description, is_active, created_at, updated_at, posts_count"
 					}
 				},
 				{
@@ -1326,7 +1383,26 @@
 							"raw": "{{base_url}}/query/tags",
 							"host": ["{{base_url}}"],
 							"path": ["query", "tags"]
-						}
+						},
+						"description": "Returns minimal fields: id, name, slug"
+					}
+				},
+				{
+					"name": "Get Tag Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/tags/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "tags", "1"]
+						},
+						"description": "Returns full tag details using TagDetailResource: id, name, slug, created_at, updated_at, posts_count"
 					}
 				},
 				{
@@ -1484,7 +1560,26 @@
 							"raw": "{{base_url}}/query/users",
 							"host": ["{{base_url}}"],
 							"path": ["query", "users"]
-						}
+						},
+						"description": "Returns minimal fields: id, name, email"
+					}
+				},
+				{
+					"name": "Get User Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/query/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["query", "users", "1"]
+						},
+						"description": "Returns full user details using UserDetailResource: id, name, email, email_verified_at, created_at, updated_at, posts_count, comments_count"
 					}
 				},
 				{

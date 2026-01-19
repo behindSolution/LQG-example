@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Resources\UserDetailResource;
 use App\Http\Resources\UserResource;
 use BehindSolution\LaravelQueryGate\Contracts\QueryGateAction;
 use BehindSolution\LaravelQueryGate\Support\ActionDefinition;
@@ -74,11 +75,8 @@ class User extends Authenticatable
                 'id' => fake()->randomNumber(),
                 'name' => fake()->name(),
                 'email' => fake()->safeEmail(),
-                'email_verified_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
-                'created_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
-                'updated_at' => fake()->dateTime()->format('Y-m-d H:i:s'),
             ])
-            ->select(UserResource::class)
+            ->select(['id', 'name', 'email'])
             ->actions(fn ($actions) => $actions
                 ->create(fn (ActionDefinition $action) => $action
                     ->validations([
@@ -108,6 +106,10 @@ class User extends Authenticatable
                     ])
                 )
                 ->delete()
+                ->detail(fn ($action) => $action
+                    ->select(UserDetailResource::class)
+                    ->query(fn ($query) => $query->withCount(['posts', 'comments']))
+                )
             );
     }
 }
